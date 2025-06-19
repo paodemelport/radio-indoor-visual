@@ -1,81 +1,98 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>🎧 Rádio Indoor</title>
-<style>
-  body{margin:0;font-family:sans-serif;display:flex;height:100vh}
-  nav{width:200px;background:#222;color:#fff;display:flex;flex-direction:column}
-  nav h2{margin:0;padding:1em;border-bottom:1px solid #444;text-align:center}
-  nav a{padding:1em;color:#ccc;text-decoration:none;border-bottom:1px solid #444}
-  nav a:hover{background:#444;color:#fff}
-  main{flex:1;padding:1em;overflow:auto;background:#f4f4f4}
-  section{background:#fff;padding:1em;margin-bottom:1em;border-radius:4px;box-shadow:0 2px 4px rgba(0,0,0,.1)}
-  audio,video,img{width:100%;margin:.5em 0;border-radius:4px}
-  button{padding:.4em 1em;margin-top:.5em}
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>🎧 Rádio Indoor</title>
+  <style>
+    body { margin:0; padding:0; font-family:sans-serif; display:flex; height:100vh; }
+    nav  { width:200px; background:#222; color:#fff; display:flex; flex-direction:column; }
+    nav h2{ margin:0; padding:1em; border-bottom:1px solid #444; text-align:center; }
+    nav a { padding:1em; color:#ccc; text-decoration:none; border-bottom:1px solid #444; }
+    nav a:hover { background:#444; color:#fff; }
+    main { flex:1; padding:1em; overflow:auto; background:#f4f4f4; }
+    section { background:#fff; padding:1em; margin-bottom:1em; border-radius:4px;
+              box-shadow:0 2px 4px rgba(0,0,0,.1); }
+    h1,h2{margin-top:0;}
+    audio,video,img{width:100%; margin:.5em 0; border-radius:4px;}
+    form{margin-top:.5em;}
+    button{padding:.4em 1em; cursor:pointer;}
+  </style>
 </head>
 <body>
-<nav>
-  <h2>Rádio Indoor</h2>
-  <a href="#musicas">🎵 Músicas</a>
-  <a href="#vinhetas">📢 Vinhetas</a>
-  <a href="#slides">🖼️ Slides</a>
-  <button id="fullscreen">Tela&nbsp;cheia</button>
-</nav>
 
-<main>
-<h1>🎶 Painel da Rádio Indoor</h1>
+  <nav>
+    <h2>Rádio Indoor</h2>
+    <a href="#musicas">🎵 Músicas</a>
+    <a href="#vinhetas">📢 Vinhetas</a>
+    <a href="#slides">🖼️ Slides</a>
+    <button id="fullscreen">Tela&nbsp;cheia</button>
+  </nav>
 
-<section id="musicas">
-  <h2>🎵 Player de Músicas</h2>
-  {% for m in musicas %}
-    <p>{{ m }}</p>
-    <audio controls>
-      <source src="{{ url_for('static', filename='audio/music/' + m) }}" type="audio/mpeg">
-    </audio>
-  {% endfor %}
-  <form action="{{ url_for('upload_music') }}" method="post" enctype="multipart/form-data">
-    <input type="file" name="file" accept=".mp3,.wav,.ogg" required>
-    <button>Upload Música</button>
-  </form>
-</section>
+  <main>
+    <h1>🎶 Painel da Rádio Indoor</h1>
 
-<section id="vinhetas">
-  <h2>📢 Player de Vinhetas</h2>
-  {% for v in vinhetas %}
-    <p>{{ v }}</p>
-    <audio controls>
-      <source src="{{ url_for('static', filename='audio/vinhetas/' + v) }}" type="audio/mpeg">
-    </audio>
-  {% endfor %}
-  <form action="{{ url_for('upload_vinheta') }}" method="post" enctype="multipart/form-data">
-    <input type="file" name="file" accept=".mp3,.wav,.ogg" required>
-    <button>Upload Vinheta</button>
-  </form>
-</section>
+    <!-- MÚSICAS -->
+    <section id="musicas">
+      <h2>🎵 Player de Músicas</h2>
+      {% for m in musicas %}
+        <p>{{ m }}</p>
+        <audio controls>
+          <source src="{{ url_for('static', filename='audio/music/' + m) }}" type="audio/mpeg">
+        </audio>
+      {% endfor %}
+      <form action="{{ url_for('upload_music') }}" method="post" enctype="multipart/form-data">
+        <input type="file" name="file" accept=".mp3,.wav,.ogg" required>
+        <button>Upload Música</button>
+      </form>
+    </section>
 
-<section id="slides">
-  <h2>🖼️ Slides / Vídeos</h2>
-  {% for s in slides %}
-    <p>{{ s }}</p>
-    {% if s.endswith(('mp4','webm','ogg')) %}
-      <video src="{{ url_for('static', filename='images/' + s) }}" autoplay loop muted></video>
-    {% else %}
-      <img src="{{ url_for('static', filename='images/' + s) }}">
-    {% endif %}
-  {% endfor %}
-  <form action="{{ url_for('upload_slide') }}" method="post" enctype="multipart/form-data">
-    <input type="file" name="file" accept=".jpg,.jpeg,.png,.gif,.mp4,.webm,.ogg" required>
-    <button>Upload Slide/Vídeo</button>
-  </form>
-</section>
-</main>
+    <!-- VINHETAS -->
+    <section id="vinhetas">
+      <h2>📢 Player de Vinhetas</h2>
+      {% for v in vinhetas %}
+        <p>{{ v }}</p>
+        <audio controls>
+          <source src="{{ url_for('static', filename='audio/vinhetas/' + v) }}" type="audio/mpeg">
+        </audio>
+      {% endfor %}
+      <form action="{{ url_for('upload_vinheta') }}" method="post" enctype="multipart/form-data">
+        <input type="file" name="file" accept=".mp3,.wav,.ogg" required>
+        <button>Upload Vinheta</button>
+      </form>
+    </section>
 
-<script>
-document.getElementById('fullscreen').onclick = () =>
-  document.documentElement.requestFullscreen();
-</script>
+    <!-- SLIDES -->
+    <section id="slides">
+      <h2>🖼️ Slides / Vídeos</h2>
+      {% for s in slides %}
+        <p>{{ s }}</p>
+        {% if s.endswith(('mp4','webm','ogg')) %}
+          <video src="{{ url_for('static', filename='images/' + s) }}" autoplay loop muted></video>
+        {% else %}
+          <img src="{{ url_for('static', filename='images/' + s) }}" alt="{{ s }}">
+        {% endif %}
+      {% endfor %}
+      <form action="{{ url_for('upload_slide') }}" method="post" enctype="multipart/form-data">
+        <input type="file" name="file"
+               accept=".jpg,.jpeg,.png,.gif,.mp4,.webm,.ogg" required>
+        <button>Upload Slide/Vídeo</button>
+      </form>
+    </section>
+  </main>
+
+  <script>
+    const slideSection = document.getElementById('slides');
+    const btnFull     = document.getElementById('fullscreen');
+
+    btnFull.addEventListener('click', () => {
+      if (document.fullscreenElement) {
+        document.exitFullscreen();
+      } else {
+        slideSection.requestFullscreen();
+      }
+    });
+  </script>
+
 </body>
 </html>
