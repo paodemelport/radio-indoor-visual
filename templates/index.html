@@ -1,98 +1,303 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>🎧 Rádio Indoor</title>
-  <style>
-    body { margin:0; padding:0; font-family:sans-serif; display:flex; height:100vh; }
-    nav  { width:200px; background:#222; color:#fff; display:flex; flex-direction:column; }
-    nav h2{ margin:0; padding:1em; border-bottom:1px solid #444; text-align:center; }
-    nav a { padding:1em; color:#ccc; text-decoration:none; border-bottom:1px solid #444; }
-    nav a:hover { background:#444; color:#fff; }
-    main { flex:1; padding:1em; overflow:auto; background:#f4f4f4; }
-    section { background:#fff; padding:1em; margin-bottom:1em; border-radius:4px;
-              box-shadow:0 2px 4px rgba(0,0,0,.1); }
-    h1,h2{margin-top:0;}
-    audio,video,img{width:100%; margin:.5em 0; border-radius:4px;}
-    form{margin-top:.5em;}
-    button{padding:.4em 1em; cursor:pointer;}
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rádio Indoor - Painel de Controle</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
+    <!-- Menu Lateral -->
+    <nav class="sidebar">
+        <div class="sidebar-header">
+            <div class="logo">
+                <i class="fas fa-radio"></i>
+                <span>Rádio Indoor</span>
+            </div>
+            <button class="sidebar-toggle" id="sidebarToggle">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+        
+        <ul class="sidebar-menu">
+            <li class="menu-item active" data-section="musicas">
+                <i class="fas fa-music"></i>
+                <span>Músicas</span>
+            </li>
+            <li class="menu-item" data-section="vinhetas">
+                <i class="fas fa-bullhorn"></i>
+                <span>Vinhetas</span>
+            </li>
+            <li class="menu-item" data-section="slides">
+                <i class="fas fa-images"></i>
+                <span>Slides/Vídeos</span>
+            </li>
+        </ul>
+        
+        <div class="sidebar-footer">
+            <div class="user-info">
+                <i class="fas fa-user-circle"></i>
+                <span>Admin</span>
+            </div>
+        </div>
+    </nav>
 
-  <nav>
-    <h2>Rádio Indoor</h2>
-    <a href="#musicas">🎵 Músicas</a>
-    <a href="#vinhetas">📢 Vinhetas</a>
-    <a href="#slides">🖼️ Slides</a>
-    <button id="fullscreen">Tela&nbsp;cheia</button>
-  </nav>
+    <!-- Conteúdo Principal -->
+    <main class="main-content">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-left">
+                <button class="mobile-menu-toggle" id="mobileMenuToggle">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <h1 class="page-title">Painel de Controle</h1>
+            </div>
+            <div class="header-right">
+                <div class="status-indicator">
+                    <span class="status-dot online"></span>
+                    <span>Sistema Online</span>
+                </div>
+            </div>
+        </header>
 
-  <main>
-    <h1>🎶 Painel da Rádio Indoor</h1>
+        <!-- Seção Músicas -->
+        <section id="musicas" class="content-section active">
+            <div class="section-header">
+                <h2><i class="fas fa-music"></i> Gerenciar Músicas</h2>
+                <button class="btn btn-primary" onclick="openUploadModal('music')">
+                    <i class="fas fa-plus"></i> Adicionar Música
+                </button>
+            </div>
+            
+            <div class="cards-grid">
+                <div class="card">
+                    <div class="card-header">
+                        <h3>Biblioteca de Músicas</h3>
+                        <span class="badge">12 arquivos</span>
+                    </div>
+                    <div class="card-body">
+                        <div class="music-list" id="musicList">
+                            <!-- Lista de músicas será carregada aqui -->
+                            <div class="music-item">
+                                <div class="music-info">
+                                    <i class="fas fa-music"></i>
+                                    <div>
+                                        <h4>Exemplo - Música 1</h4>
+                                        <p>Artista Exemplo • 3:45</p>
+                                    </div>
+                                </div>
+                                <div class="music-controls">
+                                    <button class="btn-icon" onclick="playMusic('music1.mp3')">
+                                        <i class="fas fa-play"></i>
+                                    </button>
+                                    <button class="btn-icon" onclick="deleteMusic('music1.mp3')">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <div class="card-header">
+                        <h3>Player Atual</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="current-player">
+                            <div class="player-display">
+                                <div class="track-info">
+                                    <h4 id="currentTrack">Nenhuma música selecionada</h4>
+                                    <p id="currentArtist">-</p>
+                                </div>
+                                <div class="player-controls">
+                                    <button class="btn-icon" id="playPauseBtn">
+                                        <i class="fas fa-play"></i>
+                                    </button>
+                                    <button class="btn-icon" id="stopBtn">
+                                        <i class="fas fa-stop"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <audio id="audioPlayer" controls style="width: 100%; margin-top: 15px;"></audio>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
 
-    <!-- MÚSICAS -->
-    <section id="musicas">
-      <h2>🎵 Player de Músicas</h2>
-      {% for m in musicas %}
-        <p>{{ m }}</p>
-        <audio controls>
-          <source src="{{ url_for('static', filename='audio/music/' + m) }}" type="audio/mpeg">
-        </audio>
-      {% endfor %}
-      <form action="{{ url_for('upload_music') }}" method="post" enctype="multipart/form-data">
-        <input type="file" name="file" accept=".mp3,.wav,.ogg" required>
-        <button>Upload Música</button>
-      </form>
-    </section>
+        <!-- Seção Vinhetas -->
+        <section id="vinhetas" class="content-section">
+            <div class="section-header">
+                <h2><i class="fas fa-bullhorn"></i> Gerenciar Vinhetas</h2>
+                <button class="btn btn-primary" onclick="openUploadModal('vinhetas')">
+                    <i class="fas fa-plus"></i> Adicionar Vinheta
+                </button>
+            </div>
+            
+            <div class="cards-grid">
+                <div class="card">
+                    <div class="card-header">
+                        <h3>Biblioteca de Vinhetas</h3>
+                        <span class="badge">5 arquivos</span>
+                    </div>
+                    <div class="card-body">
+                        <div class="vinhetas-list" id="vinhetasList">
+                            <!-- Lista de vinhetas será carregada aqui -->
+                            <div class="vinheta-item">
+                                <div class="vinheta-info">
+                                    <i class="fas fa-bullhorn"></i>
+                                    <div>
+                                        <h4>Vinheta Abertura</h4>
+                                        <p>Institucional • 0:15</p>
+                                    </div>
+                                </div>
+                                <div class="vinheta-controls">
+                                    <button class="btn-icon" onclick="playVinheta('vinheta1.mp3')">
+                                        <i class="fas fa-play"></i>
+                                    </button>
+                                    <button class="btn-icon" onclick="deleteVinheta('vinheta1.mp3')">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <div class="card-header">
+                        <h3>Player de Vinhetas</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="vinheta-player">
+                            <div class="player-display">
+                                <div class="track-info">
+                                    <h4 id="currentVinheta">Nenhuma vinheta selecionada</h4>
+                                    <p id="vinhetaType">-</p>
+                                </div>
+                                <div class="player-controls">
+                                    <button class="btn-icon" id="vinhetaPlayPauseBtn">
+                                        <i class="fas fa-play"></i>
+                                    </button>
+                                    <button class="btn-icon" id="vinhetaStopBtn">
+                                        <i class="fas fa-stop"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <audio id="vinhetaPlayer" controls style="width: 100%; margin-top: 15px;"></audio>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
 
-    <!-- VINHETAS -->
-    <section id="vinhetas">
-      <h2>📢 Player de Vinhetas</h2>
-      {% for v in vinhetas %}
-        <p>{{ v }}</p>
-        <audio controls>
-          <source src="{{ url_for('static', filename='audio/vinhetas/' + v) }}" type="audio/mpeg">
-        </audio>
-      {% endfor %}
-      <form action="{{ url_for('upload_vinheta') }}" method="post" enctype="multipart/form-data">
-        <input type="file" name="file" accept=".mp3,.wav,.ogg" required>
-        <button>Upload Vinheta</button>
-      </form>
-    </section>
+        <!-- Seção Slides/Vídeos -->
+        <section id="slides" class="content-section">
+            <div class="section-header">
+                <h2><i class="fas fa-images"></i> Slides e Vídeos</h2>
+                <div class="section-actions">
+                    <button class="btn btn-secondary" onclick="toggleFullscreen()" id="fullscreenBtn">
+                        <i class="fas fa-expand"></i> Tela Cheia
+                    </button>
+                    <button class="btn btn-primary" onclick="openUploadModal('slides')">
+                        <i class="fas fa-plus"></i> Adicionar Mídia
+                    </button>
+                </div>
+            </div>
+            
+            <div class="cards-grid">
+                <div class="card slide-viewer-card">
+                    <div class="card-header">
+                        <h3>Visualizador</h3>
+                        <div class="slide-controls">
+                            <button class="btn-icon" onclick="previousSlide()">
+                                <i class="fas fa-chevron-left"></i>
+                            </button>
+                            <span id="slideCounter">1 / 5</span>
+                            <button class="btn-icon" onclick="nextSlide()">
+                                <i class="fas fa-chevron-right"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="slide-display" id="slideDisplay">
+                            <div class="slide-placeholder">
+                                <i class="fas fa-image"></i>
+                                <p>Nenhuma mídia carregada</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <div class="card-header">
+                        <h3>Biblioteca de Mídia</h3>
+                        <span class="badge">8 arquivos</span>
+                    </div>
+                    <div class="card-body">
+                        <div class="media-grid" id="mediaGrid">
+                            <!-- Grid de mídia será carregado aqui -->
+                            <div class="media-item" onclick="selectMedia('slide1.jpg')">
+                                <img src="/static/images/slide1.jpg" alt="Slide 1" onerror="this.style.display='none'">
+                                <div class="media-overlay">
+                                    <i class="fas fa-eye"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
 
-    <!-- SLIDES -->
-    <section id="slides">
-      <h2>🖼️ Slides / Vídeos</h2>
-      {% for s in slides %}
-        <p>{{ s }}</p>
-        {% if s.endswith(('mp4','webm','ogg')) %}
-          <video src="{{ url_for('static', filename='images/' + s) }}" autoplay loop muted></video>
-        {% else %}
-          <img src="{{ url_for('static', filename='images/' + s) }}" alt="{{ s }}">
-        {% endif %}
-      {% endfor %}
-      <form action="{{ url_for('upload_slide') }}" method="post" enctype="multipart/form-data">
-        <input type="file" name="file"
-               accept=".jpg,.jpeg,.png,.gif,.mp4,.webm,.ogg" required>
-        <button>Upload Slide/Vídeo</button>
-      </form>
-    </section>
-  </main>
+    <!-- Modal de Upload -->
+    <div class="modal" id="uploadModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modalTitle">Adicionar Arquivo</h3>
+                <button class="modal-close" onclick="closeUploadModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="upload-area" id="uploadArea">
+                    <i class="fas fa-cloud-upload-alt"></i>
+                    <p>Arraste arquivos aqui ou clique para selecionar</p>
+                    <input type="file" id="fileInput" multiple accept="">
+                </div>
+                <div class="upload-progress" id="uploadProgress" style="display: none;">
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="progressFill"></div>
+                    </div>
+                    <p id="progressText">Enviando...</p>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeUploadModal()">Cancelar</button>
+                <button class="btn btn-primary" onclick="uploadFiles()" id="uploadBtn">Enviar</button>
+            </div>
+        </div>
+    </div>
 
-  <script>
-    const slideSection = document.getElementById('slides');
-    const btnFull     = document.getElementById('fullscreen');
+    <!-- Overlay de Tela Cheia -->
+    <div class="fullscreen-overlay" id="fullscreenOverlay">
+        <div class="fullscreen-content">
+            <div class="fullscreen-header">
+                <h3>Apresentação</h3>
+                <button class="btn-icon" onclick="exitFullscreen()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="fullscreen-display" id="fullscreenDisplay">
+                <!-- Conteúdo da tela cheia -->
+            </div>
+        </div>
+    </div>
 
-    btnFull.addEventListener('click', () => {
-      if (document.fullscreenElement) {
-        document.exitFullscreen();
-      } else {
-        slideSection.requestFullscreen();
-      }
-    });
-  </script>
-
+    <script src="{{ url_for('static', filename='app.js') }}"></script>
 </body>
 </html>
+
