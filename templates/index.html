@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>🎧 Rádio Indoor - Painel Completo</title>
+  <style>
+    body {
+      margin: 0; padding: 0;
+      font-family: sans-serif;
+      display: flex; height: 100vh;
+    }
+    nav {
+      width: 200px; background: #222;
+      color: #fff; display: flex;
+      flex-direction: column;
+    }
+    nav h2 {
+      padding: 1em; margin: 0;
+      text-align: center; font-size: 1.2em;
+      border-bottom: 1px solid #444;
+    }
+    nav a {
+      padding: 1em; color: #ccc;
+      text-decoration: none; border-bottom: 1px solid #444;
+    }
+    nav a:hover {
+      background: #444; color: #fff;
+    }
+    main {
+      flex: 1; padding: 1em; overflow: auto;
+      background: #f4f4f4;
+    }
+    section {
+      background: #fff; padding: 1em;
+      margin-bottom: 1em; border-radius: 4px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    h1, h2 { margin-top: 0; }
+    audio { width: 100%; margin-top: .5em; }
+    .slides img {
+      max-width: 100%; margin: .5em 0;
+      border-radius: 4px;
+    }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <h2>Rádio Indoor</h2>
+    <a href="#musicas">🎵 Músicas</a>
+    <a href="#vinhetas">📢 Vinhetas</a>
+    <a href="#slides">🖼️ Slides</a>
+  </nav>
+
+  <main>
+    <h1>🎶 Bem-vindo ao Painel da Rádio Indoor</h1>
+
+    <section id="musicas">
+      <h2>🎵 Player de Músicas</h2>
+      <audio controls autoplay loop>
+        <source src="/static/audio/music_demo.mp3" type="audio/mpeg"/>
+        Seu navegador não suporta áudio.
+      </audio>
+    </section>
+
+    <section id="vinhetas">
+      <h2>📢 Player de Vinhetas</h2>
+      <audio controls>
+        <source src="/static/audio/vinheta_demo.mp3" type="audio/mpeg"/>
+      </audio>
+    </section>
+
+    <section id="slides" class="slides">
+      <h2>🖼️ Slides Automáticos</h2>
+      <img src="/static/images/slide1.jpg" alt="Slide 1"/>
+      <img src="/static/images/slide2.jpg" alt="Slide 2"/>
+    </section>
+  </main>
+
+</body>
+</html>
