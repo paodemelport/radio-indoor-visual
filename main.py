@@ -4,46 +4,55 @@ from werkzeug.utils import secure_filename
 
 app = Flask(__name__)
 
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-MUSIC_DIR = os.path.join(BASE_DIR, 'static', 'audio', 'music')
-VINHETA_DIR = os.path.join(BASE_DIR, 'static', 'audio', 'vinhetas')
-SLIDES_DIR = os.path.join(BASE_DIR, 'static', 'images')
+# Diretórios de mídia
+BASE_DIR    = os.path.dirname(os.path.abspath(__file__))
+STATIC_DIR  = os.path.join(BASE_DIR, 'static')
+MUSIC_DIR   = os.path.join(STATIC_DIR, 'audio', 'music')
+VINHETA_DIR = os.path.join(STATIC_DIR, 'audio', 'vinhetas')
+SLIDES_DIR  = os.path.join(STATIC_DIR, 'images')
 
-ALLOWED_AUDIO = {'mp3', 'wav', 'ogg'}
+# Cria as pastas se não existirem
+for d in (MUSIC_DIR, VINHETA_DIR, SLIDES_DIR):
+    os.makedirs(d, exist_ok=True)
+
+# Extensões permitidas
+ALLOWED_AUDIO  = {'mp3', 'wav', 'ogg'}
 ALLOWED_IMAGES = {'jpg', 'jpeg', 'png', 'gif'}
 
-def allowed_file(filename, allowed_set):
-    return '.' in filename and filename.rsplit('.', 1)[1].lower() in allowed_set
+def allowed_file(filename, allowed):
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in allowed
 
 @app.route('/', methods=['GET'])
 def index():
-    musicas = os.listdir(MUSIC_DIR)
-    vinhetas = os.listdir(VINHETA_DIR)
-    slides = os.listdir(SLIDES_DIR)
-    return render_template('index.html', musicas=musicas, vinhetas=vinhetas, slides=slides)
+    musicas  = sorted(os.listdir(MUSIC_DIR))
+    vinhetas = sorted(os.listdir(VINHETA_DIR))
+    slides   = sorted(os.listdir(SLIDES_DIR))
+    return render_template('index.html',
+        musicas=musicas, vinhetas=vinhetas, slides=slides
+    )
 
 @app.route('/upload/music', methods=['POST'])
 def upload_music():
     f = request.files.get('file')
     if f and allowed_file(f.filename, ALLOWED_AUDIO):
-        filename = secure_filename(f.filename)
-        f.save(os.path.join(MUSIC_DIR, filename))
+        fn = secure_filename(f.filename)
+        f.save(os.path.join(MUSIC_DIR, fn))
     return redirect(url_for('index') + '#musicas')
 
 @app.route('/upload/vinheta', methods=['POST'])
 def upload_vinheta():
     f = request.files.get('file')
     if f and allowed_file(f.filename, ALLOWED_AUDIO):
-        filename = secure_filename(f.filename)
-        f.save(os.path.join(VINHETA_DIR, filename))
+        fn = secure_filename(f.filename)
+        f.save(os.path.join(VINHETA_DIR, fn))
     return redirect(url_for('index') + '#vinhetas')
 
 @app.route('/upload/slide', methods=['POST'])
 def upload_slide():
     f = request.files.get('file')
     if f and allowed_file(f.filename, ALLOWED_IMAGES):
-        filename = secure_filename(f.filename)
-        f.save(os.path.join(SLIDES_DIR, filename))
+        fn = secure_filename(f.filename)
+        f.save(os.path.join(SLIDES_DIR, fn))
     return redirect(url_for('index') + '#slides')
 
 if __name__ == "__main__":
