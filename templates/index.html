@@ -5,78 +5,80 @@
   <meta name="viewport" content="width=device-width,initial-scale=1"/>
   <title>🎧 Rádio Indoor - Painel Completo</title>
   <style>
-    body {
-      margin: 0; padding: 0;
-      font-family: sans-serif;
-      display: flex; height: 100vh;
-    }
-    nav {
-      width: 200px; background: #222;
-      color: #fff; display: flex;
-      flex-direction: column;
-    }
-    nav h2 {
-      padding: 1em; margin: 0;
-      text-align: center; font-size: 1.2em;
-      border-bottom: 1px solid #444;
-    }
-    nav a {
-      padding: 1em; color: #ccc;
-      text-decoration: none; border-bottom: 1px solid #444;
-    }
-    nav a:hover {
-      background: #444; color: #fff;
-    }
-    main {
-      flex: 1; padding: 1em; overflow: auto;
-      background: #f4f4f4;
-    }
-    section {
-      background: #fff; padding: 1em;
-      margin-bottom: 1em; border-radius: 4px;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-    }
-    h1, h2 { margin-top: 0; }
-    audio { width: 100%; margin-top: .5em; }
-    .slides img {
-      max-width: 100%; margin: .5em 0;
-      border-radius: 4px;
-    }
+    body { margin:0; padding:0; font-family:sans-serif; display:flex; height:100vh; }
+    nav { width:200px; background:#222; color:#fff; display:flex; flex-direction:column; }
+    nav h2 { padding:1em; margin:0; text-align:center; border-bottom:1px solid #444; }
+    nav a { padding:1em; color:#ccc; text-decoration:none; border-bottom:1px solid #444; }
+    nav a:hover { background:#444; color:#fff; }
+    main { flex:1; padding:1em; overflow:auto; background:#f4f4f4; }
+    section { background:#fff; padding:1em; margin-bottom:1em; border-radius:4px; box-shadow:0 2px 4px rgba(0,0,0,0.1); }
+    h1,h2{margin-top:0;}
+    audio{width:100%; margin-top:.5em;}
+    .slides img{max-width:100%; margin:.5em 0; border-radius:4px;}
+    form{margin-top:.5em;}
+    button{padding:.5em 1em;}
   </style>
 </head>
 <body>
-
   <nav>
     <h2>Rádio Indoor</h2>
     <a href="#musicas">🎵 Músicas</a>
     <a href="#vinhetas">📢 Vinhetas</a>
     <a href="#slides">🖼️ Slides</a>
   </nav>
-
   <main>
     <h1>🎶 Bem-vindo ao Painel da Rádio Indoor</h1>
 
+    <!-- MÚSICAS -->
     <section id="musicas">
       <h2>🎵 Player de Músicas</h2>
-      <audio controls autoplay loop>
-        <source src="/static/audio/music_demo.mp3" type="audio/mpeg"/>
-        Seu navegador não suporta áudio.
-      </audio>
+      {% for m in musicas %}
+      <div class="item">
+        <p>{{ m }}</p>
+        <audio controls>
+          <source src="{{ url_for('static', filename='audio/music/' + m) }}" type="audio/mpeg"/>
+        </audio>
+      </div>
+      {% endfor %}
+      <form action="{{ url_for('upload_music') }}" method="post" enctype="multipart/form-data">
+        <input type="file" name="file" accept=".mp3,.wav,.ogg" required>
+        <button type="submit">Upload Música</button>
+      </form>
     </section>
 
+    <!-- VINHETAS -->
     <section id="vinhetas">
       <h2>📢 Player de Vinhetas</h2>
-      <audio controls>
-        <source src="/static/audio/vinheta_demo.mp3" type="audio/mpeg"/>
-      </audio>
+      {% for v in vinhetas %}
+      <div class="item">
+        <p>{{ v }}</p>
+        <audio controls>
+          <source src="{{ url_for('static', filename='audio/vinhetas/' + v) }}" type="audio/mpeg"/>
+        </audio>
+      </div>
+      {% endfor %}
+      <form action="{{ url_for('upload_vinheta') }}" method="post" enctype="multipart/form-data">
+        <input type="file" name="file" accept=".mp3,.wav,.ogg" required>
+        <button type="submit">Upload Vinheta</button>
+      </form>
     </section>
 
+    <!-- SLIDES -->
     <section id="slides" class="slides">
       <h2>🖼️ Slides Automáticos</h2>
-      <img src="/static/images/slide1.jpg" alt="Slide 1"/>
-      <img src="/static/images/slide2.jpg" alt="Slide 2"/>
+      {% for s in slides %}
+      <div class="item">
+        <p>{{ s }}</p>
+        <img src="{{ url_for('static', filename='images/' + s) }}" alt="{{ s }}"/>
+      </div>
+      {% endfor %}
+      <form action="{{ url_for('upload_slide') }}" method="post" enctype="multipart/form-data">
+        <input type="file" name="file" accept=".jpg,.jpeg,.png,.gif" required>
+        <button type="submit">Upload Slide</button>
+      </form>
     </section>
-  </main>
 
+  </main>
 </body>
 </html>
+
