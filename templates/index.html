@@ -1,20 +1,19 @@
-
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>🎧 Rádio Indoor</title>
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>🎧 Rádio Indoor</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
 <nav>
-  <h2>🎧 Rádio Indoor</h2>
+  <h2>Rádio Indoor</h2>
   <a href="{{ url_for('index') }}#musicas">🎵 Músicas</a>
-  <a href="{{ url_for('index') }}#vinhetas">🔊 Vinhetas</a>
+  <a href="{{ url_for('index') }}#vinhetas">📢 Vinhetas</a>
   <a href="{{ url_for('index') }}#slides">🖼️ Slides</a>
   <a href="{{ url_for('programacao') }}">📅 Programação</a>
-  <button id="fullscreen">⛶ Tela cheia</button>
+  <button id="fullscreen">Tela&nbsp;cheia</button>
 </nav>
 <main>
 <section id="musicas">
@@ -24,38 +23,37 @@
     <audio controls><source src="{{ url_for('static', filename='audio/music/' + m) }}"></audio>
   {% endfor %}
   <form action="{{ url_for('upload_music') }}" method="post" enctype="multipart/form-data">
-    <input type="file" name="files" multiple required accept=".mp3,.wav,.ogg">
+    <input type="file" name="files" multiple accept=".mp3,.wav,.ogg" required>
     <button>Upload</button>
   </form>
 </section>
 <section id="vinhetas">
-  <h2>🔊 Player de Vinhetas</h2>
+  <h2>📢 Player de Vinhetas</h2>
   {% for v in vinhetas %}
     <p>{{ v }}</p>
     <audio controls><source src="{{ url_for('static', filename='audio/vinhetas/' + v) }}"></audio>
   {% endfor %}
   <form action="{{ url_for('upload_vinheta') }}" method="post" enctype="multipart/form-data">
-    <input type="file" name="files" multiple required accept=".mp3,.wav,.ogg">
+    <input type="file" name="files" multiple accept=".mp3,.wav,.ogg" required>
     <button>Upload</button>
   </form>
 </section>
 <section id="slides">
   <h2>🖼️ Slides / Vídeos</h2>
-  <div id="slide-container">
   {% for s in slides %}
-    {% if s.endswith(('mp4', 'webm', 'ogg')) %}
-      <video src="{{ url_for('static', filename='images/' + s) }}" autoplay loop muted playsinline></video>
+    <p>{{ s }}</p>
+    {% if s.endswith(('mp4','webm','ogg')) %}
+      <video src="{{ url_for('static', filename='images/' + s) }}" autoplay loop muted></video>
     {% else %}
-      <img src="{{ url_for('static', filename='images/' + s) }}" alt="slide">
+      <img src="{{ url_for('static', filename='images/' + s) }}">
     {% endif %}
   {% endfor %}
-  </div>
   <form action="{{ url_for('upload_slide') }}" method="post" enctype="multipart/form-data">
-    <input type="file" name="files" multiple required accept=".jpg,.jpeg,.png,.gif,.mp4,.webm,.ogg">
+    <input type="file" name="files" multiple accept=".jpg,.jpeg,.png,.gif,.mp4,.webm,.ogg" required>
     <button>Upload</button>
   </form>
 </section>
 </main>
-<script src="{{ url_for('static', filename='js/app.js') }}"></script>
+<script src="{{ url_for('static', filename='app.js') }}"></script>
 </body>
 </html>

@@ -1,3 +1,7 @@
 document.getElementById("fullscreen").addEventListener("click", () => {
-  document.documentElement.requestFullscreen();
+  if (!document.fullscreenElement) {
+    document.documentElement.requestFullscreen();
+  } else {
+    document.exitFullscreen();
+  }
 });
