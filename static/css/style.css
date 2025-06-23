@@ -1,0 +1,34 @@
+
+body {
+  margin: 0;
+  background: #1a1a1a;
+  color: #f9f9f9;
+  font-family: sans-serif;
+}
+nav {
+  background: #111;
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  padding: 1em;
+}
+nav a, nav h2, nav button {
+  color: #f9f9f9;
+  text-decoration: none;
+  margin: 0 0.5em;
+}
+main {
+  padding: 2em;
+}
+section {
+  background: #222;
+  margin: 1em 0;
+  padding: 1em;
+  border-radius: 10px;
+}
+video, img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+  margin: auto;
+}
