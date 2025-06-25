@@ -1,21 +1,48 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-br">
 <head>
   <meta charset="UTF-8">
-  <title>📅 Programação Semanal</title>
-  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <title>Grade de Programação</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      padding: 20px;
+      background-color: #f9f9f9;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+    th, td {
+      border: 1px solid #ccc;
+      padding: 10px;
+    }
+    th {
+      background: #007BFF;
+      color: white;
+    }
+  </style>
 </head>
 <body>
-<nav>
-  <a href="{{ url_for('index') }}">🏠 Início</a>
-</nav>
-<main>
-  <h1>📅 Programação da Semana</h1>
-  <ul>
-    {% for dia, estilo in agenda.items() %}
-      <li><strong>{{ dia.title() }}:</strong> {{ estilo }}</li>
-    {% endfor %}
-  </ul>
-</main>
+  <h2>📅 Grade de Programação da Rádio</h2>
+  <table>
+    <tr>
+      <th>Horário</th>
+      <th>Programa</th>
+      <th>Estilo</th>
+    </tr>
+    <tr>
+      <td>08:00 - 10:00</td>
+      <td>Manhã Musical</td>
+      <td>MPB</td>
+    </tr>
+    <tr>
+      <td>10:00 - 12:00</td>
+      <td>Pop Hits</td>
+      <td>Pop</td>
+    </tr>
+    <!-- Adicione outras faixas -->
+  </table>
 </body>
 </html>

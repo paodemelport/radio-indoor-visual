@@ -1,1 +1,167 @@
-<!DOCTYPE html><html><head><title>Rádio Indoor</title></head><body>Player aqui</body></html>
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Rádio Indoor</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      margin: 0;
+      padding: 20px;
+      background: #f4f4f4;
+    }
+    section {
+      max-width: 1000px;
+      margin: auto;
+      background: white;
+      padding: 30px;
+      border-radius: 16px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+    h2 {
+      font-size: 26px;
+      color: #222;
+      margin-bottom: 10px;
+      border-bottom: 2px solid #007BFF;
+      padding-bottom: 10px;
+    }
+    h3 {
+      color: #007BFF;
+      margin-top: 30px;
+    }
+    label {
+      display: block;
+      margin: 6px 0;
+    }
+    button {
+      padding: 8px 16px;
+      margin-top: 12px;
+      background-color: #28a745;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    input[type="file"],
+    select,
+    input[type="number"] {
+      margin: 8px 0;
+      padding: 4px;
+    }
+    .checkbox-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    .musica-item {
+      margin: 10px 0;
+    }
+  </style>
+</head>
+<body>
+  <section>
+    <h2>🎧 Painel de Controle da Rádio Indoor</h2>
+
+    <!-- Estilos Musicais -->
+    <h3>🎼 Estilos Musicais</h3>
+    <form onsubmit="salvarEstilosSelecionados(event)">
+      <p>Selecione os estilos musicais para tocar automaticamente:</p>
+      <div class="checkbox-group">
+        <label><input type="checkbox" name="estilos" value="pop"> Pop</label>
+        <label><input type="checkbox" name="estilos" value="rock"> Rock</label>
+        <label><input type="checkbox" name="estilos" value="mpb"> MPB</label>
+        <label><input type="checkbox" name="estilos" value="sertanejo"> Sertanejo</label>
+        <label><input type="checkbox" name="estilos" value="gospel"> Gospel</label>
+        <label><input type="checkbox" name="estilos" value="outros"> Outros</label>
+      </div>
+      <button type="submit">Salvar Estilos Selecionados</button>
+    </form>
+
+    <form action="/upload_music" method="post" enctype="multipart/form-data">
+      <label for="estilo">Estilo para upload:</label>
+      <select name="estilo" id="estilo">
+        <option value="">-- Selecione --</option>
+        <option value="pop">Pop</option>
+        <option value="rock">Rock</option>
+        <option value="mpb">MPB</option>
+        <option value="sertanejo">Sertanejo</option>
+        <option value="gospel">Gospel</option>
+        <option value="outros">Outros</option>
+      </select>
+      <input type="file" name="files" multiple accept=".mp3,.wav,.ogg" required>
+      <button type="submit">Upload</button>
+    </form>
+
+    <!-- Vinhetas -->
+    <h3>📢 Vinhetas</h3>
+    <form action="/upload_vinheta" method="post" enctype="multipart/form-data">
+      <label>Upload de Vinhetas:</label>
+      <input type="file" name="files" multiple accept=".mp3,.wav,.ogg" required>
+      <button type="submit">Enviar</button>
+    </form>
+
+    <form onsubmit="salvarExtrasSelecionados(event)">
+      <p>Selecione vinhetas disponíveis:</p>
+      <label><input type="checkbox" name="vinhetas" value="vinheta1.mp3"> Vinheta 1</label>
+      <label><input type="checkbox" name="vinhetas" value="vinheta2.mp3"> Vinheta 2</label>
+      <label for="intervalo_vinheta">Tocar vinheta a cada X músicas:</label>
+      <input type="number" id="intervalo_vinheta" name="intervalo_vinheta" value="3" min="1" max="20">
+      <button type="submit">Salvar Vinhetas</button>
+    </form>
+
+    <!-- Anúncios -->
+    <h3>📢 Anúncios</h3>
+    <form action="/upload_anuncio" method="post" enctype="multipart/form-data">
+      <label>Upload de Anúncios:</label>
+      <input type="file" name="files" multiple accept=".mp3,.wav,.ogg" required>
+      <button type="submit">Enviar</button>
+    </form>
+
+    <form onsubmit="salvarExtrasSelecionados(event)">
+      <p>Selecione anúncios disponíveis:</p>
+      <label><input type="checkbox" name="anuncios" value="anuncio1.mp3"> Anúncio 1</label>
+      <label><input type="checkbox" name="anuncios" value="anuncio2.mp3"> Anúncio 2</label>
+      <label for="intervalo_anuncio">Tocar anúncio a cada X músicas:</label>
+      <input type="number" id="intervalo_anuncio" name="intervalo_anuncio" value="4" min="1" max="20">
+      <button type="submit">Salvar Anúncios</button>
+    </form>
+
+    <!-- Hora Certa -->
+    <h3>⏰ Hora Certa</h3>
+    <form onsubmit="salvarExtrasSelecionados(event)">
+      <label><input type="checkbox" name="hora_certa" id="hora_certa"> Ativar Hora Certa</label><br>
+      <label for="intervalo_hora">Tocar hora certa a cada X músicas:</label>
+      <input type="number" id="intervalo_hora" name="intervalo_hora" value="5" min="1" max="20">
+      <button type="submit">Salvar Hora Certa</button>
+    </form>
+
+    <!-- Player -->
+    <h3>🎵 Player</h3>
+    <div id="player-container">
+      <p>Player aqui</p>
+      <!-- Inserir player real aqui futuramente -->
+    </div>
+  </section>
+
+  <script>
+    function salvarEstilosSelecionados(event) {
+      event.preventDefault();
+      const estilos = Array.from(document.querySelectorAll('input[name="estilos"]:checked')).map(e => e.value);
+      localStorage.setItem('estilos', JSON.stringify(estilos));
+      alert('Estilos salvos!');
+    }
+
+    function salvarExtrasSelecionados(event) {
+      event.preventDefault();
+      localStorage.setItem('vinhetas', JSON.stringify(Array.from(document.querySelectorAll('input[name="vinhetas"]:checked')).map(e => e.value)));
+      localStorage.setItem('intervalo_vinheta', document.getElementById('intervalo_vinheta')?.value || 3);
+      localStorage.setItem('anuncios', JSON.stringify(Array.from(document.querySelectorAll('input[name="anuncios"]:checked')).map(e => e.value)));
+      localStorage.setItem('intervalo_anuncio', document.getElementById('intervalo_anuncio')?.value || 4);
+      localStorage.setItem('hora_certa', document.getElementById('hora_certa')?.checked);
+      localStorage.setItem('intervalo_hora', document.getElementById('intervalo_hora')?.value || 5);
+      alert("Configurações salvas!");
+    }
+  </script>
+</body>
+</html>
