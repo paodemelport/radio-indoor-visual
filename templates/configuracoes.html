@@ -1,0 +1,144 @@
+<!-- templates/configuracoes.html -->
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Configurações da Rádio</title>
+</head>
+<body>
+<section id="painel-radio" style="padding: 20px; background-color: #fff; border-radius: 12px; max-width: 1000px; margin: auto; font-family: sans-serif;">
+  <h2 style="font-size: 26px; color: #222; margin-bottom: 20px; border-bottom: 2px solid #007BFF; padding-bottom: 10px;">⚙️ Configurações da Rádio Indoor</h2>
+
+  <!-- === Estilos Musicais === -->
+  <div style="margin-bottom: 40px;">
+    <h3 style="color: #007BFF">🎼 Estilos Musicais</h3>
+    <form id="selecionar-estilos-form" onsubmit="salvarEstilosSelecionados(event)">
+      <p>Selecione os estilos musicais para tocar automaticamente:</p>
+      <div style="display: flex; flex-wrap: wrap; gap: 10px;">
+        <label><input type="checkbox" name="estilos" value="pop"> Pop</label>
+        <label><input type="checkbox" name="estilos" value="rock"> Rock</label>
+        <label><input type="checkbox" name="estilos" value="mpb"> MPB</label>
+        <label><input type="checkbox" name="estilos" value="sertanejo"> Sertanejo</label>
+        <label><input type="checkbox" name="estilos" value="gospel"> Gospel</label>
+        <label><input type="checkbox" name="estilos" value="outros"> Outros</label>
+      </div>
+      <br>
+      <button type="submit" class="botao-salvar">Salvar Estilos</button>
+    </form>
+    <br>
+    <form action="{{ url_for('upload_music') }}" method="post" enctype="multipart/form-data" onsubmit="return validarUploadMusica()">
+      <label for="estilo">Estilo para upload:</label>
+      <select name="estilo" id="estilo" required>
+        <option value="">-- Selecione --</option>
+        <option value="pop">Pop</option>
+        <option value="rock">Rock</option>
+        <option value="mpb">MPB</option>
+        <option value="sertanejo">Sertanejo</option>
+        <option value="gospel">Gospel</option>
+        <option value="outros">Outros</option>
+      </select>
+      <input type="file" name="files" multiple accept=".mp3,.wav,.ogg" required>
+      <button type="submit">Upload</button>
+    </form>
+  </div>
+
+  <!-- === Vinhetas === -->
+  <div style="margin-bottom: 40px;">
+    <h3 style="color: #007BFF">📢 Vinhetas</h3>
+    <form action="{{ url_for('upload_vinheta') }}" method="post" enctype="multipart/form-data">
+      <input type="file" name="files" multiple accept=".mp3,.wav,.ogg" required>
+      <button type="submit">Enviar</button>
+    </form>
+    <form id="configurar-vinhetas" onsubmit="salvarExtrasSelecionados(event)">
+      <p>Selecione vinhetas disponíveis:</p>
+      {% for v in vinhetas %}
+        <label><input type="checkbox" name="vinhetas" value="{{ v }}"> {{ v }}</label><br>
+      {% endfor %}
+      <label for="intervalo_vinheta">Tocar vinheta a cada X músicas:</label>
+      <input type="number" id="intervalo_vinheta" name="intervalo_vinheta" min="1" max="20" value="3">
+      <br><br>
+      <button type="submit">Salvar Vinhetas</button>
+    </form>
+  </div>
+
+  <!-- === Anúncios === -->
+  <div style="margin-bottom: 40px;">
+    <h3 style="color: #007BFF">📢 Anúncios</h3>
+    <form action="{{ url_for('upload_anuncio') }}" method="post" enctype="multipart/form-data">
+      <input type="file" name="files" multiple accept=".mp3,.wav,.ogg" required>
+      <button type="submit">Enviar</button>
+    </form>
+    <form id="configurar-anuncios" onsubmit="salvarExtrasSelecionados(event)">
+      <p>Selecione anúncios disponíveis:</p>
+      {% for a in anuncios %}
+        <label><input type="checkbox" name="anuncios" value="{{ a }}"> {{ a }}</label><br>
+      {% endfor %}
+      <label for="intervalo_anuncio">Tocar anúncio a cada X músicas:</label>
+      <input type="number" id="intervalo_anuncio" name="intervalo_anuncio" min="1" max="20" value="3">
+      <br><br>
+      <button type="submit">Salvar Anúncios</button>
+    </form>
+  </div>
+
+  <!-- === Hora Certa === -->
+  <div style="margin-bottom: 40px;">
+    <h3 style="color: #007BFF">⏰ Hora Certa</h3>
+    <form id="configurar-horacerta" onsubmit="salvarExtrasSelecionados(event)">
+      <label><input type="checkbox" name="hora_certa" id="hora_certa"> Ativar Hora Certa</label><br>
+      <label for="intervalo_hora">Tocar hora certa a cada X músicas:</label>
+      <input type="number" id="intervalo_hora" name="intervalo_hora" min="1" max="20" value="5">
+      <br><br>
+      <button type="submit">Salvar Hora Certa</button>
+    </form>
+  </div>
+</section>
+
+<script>
+function salvarEstilosSelecionados(event) {
+  event.preventDefault();
+  const selecionados = Array.from(document.querySelectorAll('input[name="estilos"]:checked')).map(cb => cb.value);
+  localStorage.setItem('estilos_selecionados', JSON.stringify(selecionados));
+  alert("🎶 Estilos salvos com sucesso!");
+}
+
+function salvarExtrasSelecionados(event) {
+  event.preventDefault();
+  const intervaloVinheta = document.getElementById('intervalo_vinheta')?.value || 3;
+  const intervaloAnuncio = document.getElementById('intervalo_anuncio')?.value || 3;
+  const intervaloHora = document.getElementById('intervalo_hora')?.value || 5;
+  const vinhetas = Array.from(document.querySelectorAll('input[name="vinhetas"]:checked')).map(cb => cb.value);
+  const anuncios = Array.from(document.querySelectorAll('input[name="anuncios"]:checked')).map(cb => cb.value);
+  const horaCertaAtivada = document.getElementById('hora_certa')?.checked || false;
+
+  localStorage.setItem('vinhetas_selecionadas', JSON.stringify(vinhetas));
+  localStorage.setItem('anuncios_selecionados', JSON.stringify(anuncios));
+  localStorage.setItem('intervalo_vinheta', intervaloVinheta);
+  localStorage.setItem('intervalo_anuncio', intervaloAnuncio);
+  localStorage.setItem('hora_certa_ativa', horaCertaAtivada);
+  localStorage.setItem('intervalo_hora', intervaloHora);
+
+  alert("📻 Configurações salvas com sucesso!");
+}
+
+function validarUploadMusica() {
+  const estilo = document.getElementById('estilo').value;
+  if (!estilo) {
+    alert("⚠️ Por favor, selecione um estilo musical antes de enviar.");
+    return false;
+  }
+  alert("✅ Upload enviado com sucesso!");
+  return true;
+}
+</script>
+
+<style>
+  .botao-salvar {
+    padding: 8px 16px;
+    background-color: #28a745;
+    color: white;
+    border: none;
+    border-radius: 5px;
+  }
+</style>
+</body>
+</html>
